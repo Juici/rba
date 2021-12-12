@@ -1,0 +1,6 @@
+[submodule "test-roms/jsmolka"]
+	path = test-roms/jsmolka
+	url = https://github.com/jsmolka/gba-tests.git
+[submodule "test-roms/c-sp"]
+	path = test-roms/c-sp
+	url = https://github.com/c-sp/gameboy-test-roms.git

@@ -129,9 +129,9 @@ fn compute_checksum(bytes: &[u8]) -> u8 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::util::test::ROM;
 
-    static ROM: &[u8] = include_bytes!("../../../test-roms/jsmolka/ppu/stripes.gba");
+    use super::*;
 
     #[test]
     fn info() {

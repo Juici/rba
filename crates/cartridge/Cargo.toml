@@ -1,8 +1,8 @@
 [package]
-name = "rom"
+name = "cartridge"
 version = "0.0.0"
 authors = ["Juici <juicy66173@gmail.com>"]
-description = "Library for loading ROMs."
+description = "Library for loading GBA cartridges."
 edition = "2021"
 license = "MIT OR Apache-2.0"
 publish = false

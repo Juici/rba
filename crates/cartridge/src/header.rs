@@ -39,7 +39,7 @@ use crate::util::ascii::Ascii;
 ///
 /// \[1\]: <https://problemkaputt.de/gbatek.htm#gbacartridgeheader>
 #[derive(Clone, Copy, Debug)]
-pub struct RomHeader {
+pub struct CartridgeHeader {
     /// Game title (uppercase ASCII, padded with `0x00`).
     pub game_title: Ascii<12>, // 0xA0
     /// Game code (uppercase ASCII).
@@ -75,10 +75,10 @@ impl fmt::Display for IncompleteHeaderError {
     }
 }
 
-impl RomHeader {
+impl CartridgeHeader {
     /// Parse header information from the first 192 bytes located at
     /// `0x8000000` in ROM.
-    pub fn parse(bytes: &[u8]) -> Result<RomHeader, IncompleteHeaderError> {
+    pub fn parse(bytes: &[u8]) -> Result<CartridgeHeader, IncompleteHeaderError> {
         if bytes.len() < HEADER_MIN_SIZE {
             return Err(IncompleteHeaderError);
         }
@@ -102,7 +102,7 @@ impl RomHeader {
 
         let software_version = bytes[SOFTWARE_VERSION_OFFSET];
 
-        Ok(RomHeader {
+        Ok(CartridgeHeader {
             game_title,
             game_code,
             maker_code,
@@ -125,4 +125,29 @@ fn compute_checksum(bytes: &[u8]) -> u8 {
         chk = chk.wrapping_sub(b);
     }
     chk.wrapping_sub(0x19)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    static ROM: &[u8] = include_bytes!("../../../test-roms/jsmolka/ppu/stripes.gba");
+
+    #[test]
+    fn info() {
+        let header = CartridgeHeader::parse(ROM).unwrap();
+
+        assert_eq!(header.game_title, "GBA Tests");
+        assert_eq!(header.game_code, "1337");
+        assert_eq!(header.maker_code, "JS");
+        assert_eq!(header.software_version, 0x00);
+        assert_eq!(header.checksum, 0x69);
+    }
+
+    #[test]
+    fn checksum() {
+        let header = CartridgeHeader::parse(ROM).unwrap();
+
+        assert_eq!(header.checksum, compute_checksum(&ROM[CHECKSUM_RANGE]));
+    }
 }

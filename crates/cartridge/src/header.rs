@@ -1,4 +1,3 @@
-use std::fmt;
 use std::ops::Range;
 
 use crate::util::ascii::Ascii;
@@ -66,21 +65,18 @@ const GAME_CODE_RANGE: Range<usize> = 0xAC..0xB0;
 const MAKER_CODE_RANGE: Range<usize> = 0xB0..0xB2;
 
 /// An error when a ROM header is incomplete.
-#[derive(Clone, Copy, Debug)]
-pub struct IncompleteHeaderError;
-
-impl fmt::Display for IncompleteHeaderError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad("incomplete ROM header")
-    }
+#[derive(Clone, Copy, Debug, thiserror::Error)]
+pub enum HeaderError {
+    #[error("incomplete ROM header")]
+    IncompleteHeader,
 }
 
 impl CartridgeHeader {
     /// Parse header information from the first 192 bytes located at
     /// `0x8000000` in ROM.
-    pub fn parse(bytes: &[u8]) -> Result<CartridgeHeader, IncompleteHeaderError> {
+    pub fn parse(bytes: &[u8]) -> Result<CartridgeHeader, HeaderError> {
         if bytes.len() < HEADER_MIN_SIZE {
-            return Err(IncompleteHeaderError);
+            return Err(HeaderError::IncompleteHeader);
         }
 
         let checksum = bytes[CHECKSUM_OFFSET];

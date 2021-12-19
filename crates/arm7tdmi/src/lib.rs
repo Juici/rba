@@ -4,6 +4,8 @@
 //!
 //! \[1\]: <https://problemkaputt.de/gbatek.htm#armcpureference>
 
+use std::fmt;
+
 use int_enum::IntEnum;
 
 mod bit;
@@ -24,6 +26,15 @@ pub enum CpuState {
     Arm = 0,
     /// THUMB (16-bit opcodes).
     Thumb = 1,
+}
+
+impl fmt::Display for CpuState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CpuState::Arm => f.pad("ARM"),
+            CpuState::Thumb => f.pad("THUMB"),
+        }
+    }
 }
 
 /// Cpu mode.
@@ -48,4 +59,18 @@ pub enum CpuMode {
     Undefined = 0b11011,
     /// System (privileged `User` mode).
     System = 0b11111,
+}
+
+impl fmt::Display for CpuMode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CpuMode::User => f.pad("USR"),
+            CpuMode::Fiq => f.pad("FIQ"),
+            CpuMode::Irq => f.pad("IRQ"),
+            CpuMode::Supervisor => f.pad("SVC"),
+            CpuMode::Abort => f.pad("ABT"),
+            CpuMode::Undefined => f.pad("UND"),
+            CpuMode::System => f.pad("SYS"),
+        }
+    }
 }

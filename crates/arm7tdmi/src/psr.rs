@@ -10,6 +10,10 @@ use crate::bit::BitIndex;
 use crate::{CpuMode, CpuState};
 
 /// A program status register (xPSR).
+///
+/// # Sources
+///
+/// \[1\]: <https://problemkaputt.de/gbatek.htm#armcpuflagsconditionfieldcond>
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 #[repr(transparent)]
 pub struct Psr {
@@ -45,25 +49,29 @@ impl Psr {
 
     /// Checks the overflow flag (V).
     #[inline]
-    pub fn overflow(self) -> bool {
+    #[allow(non_snake_case)]
+    pub fn V(self) -> bool {
         self.raw.bit::<28>()
     }
 
     /// Checks the carry flag (C).
     #[inline]
-    pub fn carry(self) -> bool {
+    #[allow(non_snake_case)]
+    pub fn C(self) -> bool {
         self.raw.bit::<29>()
     }
 
     /// Checks the zero flag (Z).
     #[inline]
-    pub fn zero(self) -> bool {
+    #[allow(non_snake_case)]
+    pub fn Z(self) -> bool {
         self.raw.bit::<30>()
     }
 
     /// Checks the sign flag (N).
     #[inline]
-    pub fn sign(self) -> bool {
+    #[allow(non_snake_case)]
+    pub fn N(self) -> bool {
         self.raw.bit::<31>()
     }
 }
@@ -86,10 +94,10 @@ impl fmt::Display for Psr {
             state = self.state(),
             irq = interrupt_disabled(self.irq_disabled()),
             fiq = interrupt_disabled(self.fiq_disabled()),
-            N = self.sign(),
-            Z = self.zero(),
-            C = self.carry(),
-            V = self.overflow(),
+            N = self.N(),
+            Z = self.Z(),
+            C = self.C(),
+            V = self.V(),
         )
     }
 }

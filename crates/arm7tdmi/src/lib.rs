@@ -74,3 +74,53 @@ impl fmt::Display for CpuMode {
         }
     }
 }
+
+/// Opcode suffixes for conditionally executed code based on the `N`, `Z`, `C`,
+/// `V` flags in [CPSR].
+///
+/// In [ARM] mode, `Cond` can be used with all opcodes. In [THUMB] mode, `Cond`
+/// can only be used with branch opcodes.
+///
+/// [CPSR]: crate::psr::Psr
+/// [ARM]: CpuState::Arm
+/// [THUMB]: CpuState::Thumb
+///
+/// # Sources
+///
+/// \[1\]: <https://problemkaputt.de/gbatek.htm#armcpuflagsconditionfieldcond>
+#[derive(Clone, Copy, Debug, Eq, PartialEq, IntEnum)]
+#[repr(u8)]
+pub enum Cond {
+    /// Equal (zero, `Z=1`).
+    EQ = 0x0,
+    /// Not equal (nonzero, `Z=0`).
+    NE = 0x1,
+    /// Unsigned higher or same (carry set, `C=1`).
+    HS = 0x2,
+    /// Unsigned lower (carry cleared, `C=0`).
+    LO = 0x3,
+    /// Signed negative (minus, `N=1`).
+    MI = 0x4,
+    /// Signed positive or zero (plus, `N=1`).
+    PL = 0x5,
+    /// Signed overflow (overflow set, `V=1`).
+    VS = 0x6,
+    /// Signed no overflow (overflow cleared, `V=0`).
+    VC = 0x7,
+    /// Unsigned higher (`C=1` and `Z=0`).
+    HI = 0x8,
+    /// Unsigned lower or same (`C=0` or `Z=1`).
+    LS = 0x9,
+    /// Signed greater than or equal (`N=V`).
+    GE = 0xA,
+    /// Signed less than (`N!=V`).
+    LT = 0xB,
+    /// Signed greater than (`Z=0` and `N=V`).
+    GT = 0xC,
+    /// Signed less than or equal (`Z=1` or `N!=V`).
+    LE = 0xD,
+    /// Always.
+    AL = 0xE,
+    /// Invalid.
+    Invalid = 0xF,
+}
